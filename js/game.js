@@ -8,14 +8,11 @@ const characters = [
 	"charmander",
 	"chikorita",
 	"cyndaquil",
-	// "dragonite",
 	"eevee",
 	"hypno",
 	"jigglypuff",
 	"mewtwo",
 	"pikachu",
-	// "slowpoke",
-	// "snorlax",
 	"squirtle",
 	"vaporeon",
 ];
@@ -34,9 +31,11 @@ const checkEndGame = () => {
 
 	if (disabledCards.length === 24) {
 		clearInterval(this.loop);
-		alert(
-			`Way to go, ${spanPlayer.innerHTML}! Your time was: ${timer.innerHTML}`
-		);
+		setTimeout(() => {
+			alert(
+				`Way to go ${spanPlayer.innerHTML}! Your time was: ${timer.innerHTML}`
+			);
+		}, 100); // Small delay to ensure the last card is revealed
 	}
 };
 
@@ -59,12 +58,15 @@ const checkCards = () => {
 
 			firstCard = "";
 			secondCard = "";
-		}, 500);
+		}, 600);
 	}
 };
 
 const revealCard = ({ target }) => {
-	if (target.parentNode.className.includes("reveal-card")) {
+	if (
+		target.parentNode.className.includes("reveal-card") ||
+		target.parentNode.className.includes("disabled-card")
+	) {
 		return;
 	}
 
@@ -112,6 +114,27 @@ const startTimer = () => {
 		timer.innerHTML = currentTime + 1;
 	}, 1000);
 };
+
+const playAgainButton = document.getElementById("play-again");
+
+const resetGame = () => {
+	// Clear the grid
+	grid.innerHTML = "";
+
+	// Reset the timer
+	clearInterval(this.loop);
+	timer.innerHTML = "0";
+
+	// Reset the firstCard and secondCard variables
+	firstCard = "";
+	secondCard = "";
+
+	// Restart the game
+	startTimer();
+	loadGame();
+};
+
+playAgainButton.addEventListener("click", resetGame);
 
 window.onload = () => {
 	spanPlayer.innerHTML = localStorage.getItem("player");
